@@ -30,7 +30,7 @@ def main_function(sc):
          user_agent="web scraper by u/qk_stock_scraper v0.1"
      )
     print("time is " + str(time.time()))
-    #gets our tickers
+    # gets our tickers
     tickers = get_tickers()
     filtered_words = ["YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
@@ -47,60 +47,61 @@ def main_function(sc):
     # sets up variable to hold the timestamp of the first post we look at
     lastDateTS = prevDate
 
-    # iterates through the 10 newest posts
+    # gets the subreddit
     wsb = reddit.subreddit("wallstreetbets")
+
+    # iterates through the 100 newest posts or until we reach a post we've already scanned
     for submission in wsb.new(limit=100):
-
-        #print("author", submission.author.name)
-
         # breaks if we have seen this post before
         if float(submission.created) <= prevDate:
             print("breaking now")
             break
-
 
         # sets the first post we read as the previous post, so we know where to stop next time
         if lastDateTS == prevDate:
             print("just set the new date")
             lastDateTS = float(submission.created)
 
-        # sets up the set to store the new tickers
-        new_tickers = set()
-
-        # print("")
-        # print("Title: ", submission.title)
-        # print("Body: ", submission.selftext)
-
-        # handle if theres a dollar sign
+        # iterates through the title
         for word in submission.title.split():
+            # handle if theres a dollar sign
             if word.startswith("$"):
                 word = word[1:]
+
             #TODO: Add a more advanced way to filter tickers, get rid of the noise
             if word in tickers and word not in filtered_words:
-                new_tickers.add(word)
+                # TODO: Add a way to convert the date we get from submission object to something human readable instead of
+                # using now()
+
+                # adds the new ticker to the DB
+                mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
+                mydb.commit()
+
+        # iterates through the body of the post
         for word in submission.selftext.split():
+            # handle if theres a dollar sign
+            if word.startswith("$"):
+                word = word[1:]
+
             if word in tickers and word not in filtered_words:
-                new_tickers.add(word)
-        for word in new_tickers:
-            print("Found: ", word)
-            #inserts any tickers that get found into the mysql database
-            #TODO: Add a way to convert the date we get from submission object to something human readable instead of
-            #using now()
-            mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
-            mydb.commit()
-            print("added")
+                # TODO: Add a way to convert the date we get from submission object to something human readable instead of
+                # using now()
+
+                # adds the new ticker to the DB
+                mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
+                mydb.commit()
 
     # writes the last post we looked at so we know when to stop
     fout = open("prev.txt", "w")
     fout.write(str(lastDateTS))
     fout.close
 
+    # scheduler runs the next loop through
     print("stopping for 10 mins")
     s.enter(600, 1, main_function, (sc,))
 
 
-
-#sets up the database connector and cursor
+# sets up the database connector and cursor
 mydb = mysql.connector.connect(
   host="localhost",
   user="stock_scraper",
@@ -109,6 +110,7 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+# sets up scheudler for the first run through
 s = sched.scheduler(time.time, time.sleep)
 s.enter(1, 1, main_function, (s,))
 s.run()
