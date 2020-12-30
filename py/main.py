@@ -79,9 +79,9 @@ def main_function(sc):
             if word in tickers and word not in filtered_words:
                 new_tickers.add(word)
         for word in submission.selftext.split():
-            if word in tickers:
+            if word in tickers and word not in filtered_words:
                 new_tickers.add(word)
-        for word in new_tickers and word not in filtered_words:
+        for word in new_tickers:
             print("Found: ", word)
             #inserts any tickers that get found into the mysql database
             #TODO: Add a way to convert the date we get from submission object to something human readable instead of
