@@ -32,6 +32,8 @@ def main_function(sc):
     print("time is " + str(time.time()))
     #gets our tickers
     tickers = get_tickers()
+    filtered_words = ["YOLO", "FREE", "PUMP", "RH", "EOD", "IPO", "ATH", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+                      "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
     # gets the last post that was handled
     fin = open("prev.txt", "r+")
@@ -74,7 +76,7 @@ def main_function(sc):
             if word.startswith("$"):
                 word = word[1:]
             #TODO: Add a more advanced way to filter tickers, get rid of the noise
-            if word in tickers:
+            if word in tickers and word not in filtered_words:
                 new_tickers.add(word)
         for word in submission.selftext.split():
             if word in tickers:
@@ -93,8 +95,8 @@ def main_function(sc):
     fout.write(str(lastDateTS))
     fout.close
 
-    print("stopping for 5 mins")
-    s.enter(300, 1, main_function, (sc,))
+    print("stopping for 10 mins")
+    s.enter(600, 1, main_function, (sc,))
 
 
 
