@@ -32,7 +32,7 @@ def main_function(sc):
     print("time is " + str(time.time()))
     #gets our tickers
     tickers = get_tickers()
-    filtered_words = ["YOLO", "FREE", "PUMP", "RH", "EOD", "IPO", "ATH", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+    filtered_words = ["YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
     # gets the last post that was handled
@@ -81,7 +81,7 @@ def main_function(sc):
         for word in submission.selftext.split():
             if word in tickers:
                 new_tickers.add(word)
-        for word in new_tickers:
+        for word in new_tickers and word not in filtered_words:
             print("Found: ", word)
             #inserts any tickers that get found into the mysql database
             #TODO: Add a way to convert the date we get from submission object to something human readable instead of
