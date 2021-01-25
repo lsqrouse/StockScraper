@@ -41,7 +41,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.jreddit</groupId>
+			<artifactId>jreddit</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+
 	</dependencies>
+
+
 
 	<build>
 		<plugins>

@@ -12,6 +12,7 @@ public class MySQLAccess {
     private Connection connect = null;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
+    private PreparedStatement insertStock = null;
     private ResultSet resultSet = null;
 
     public void readDataBase() throws Exception {
@@ -25,11 +26,8 @@ public class MySQLAccess {
 
             // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
-            // Result set get the result of the SQL query
-            resultSet = statement
-                    .executeQuery("select * from feedback.comments");
-            writeResultSet(resultSet);
 
+            // Result set get the result of the SQL query
             /*// PreparedStatements can use variables and are more efficient
             preparedStatement = connect
                     .prepareStatement("insert into  feedback.comments values (default, ?, ?, ?, ? , ?, ?)");
