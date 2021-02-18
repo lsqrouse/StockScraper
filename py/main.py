@@ -6,7 +6,6 @@ import praw
 import mysql.connector
 
 
-
 # gets all the tickers from the tickers  file
 def get_tickers():
     fin = open("tickers.txt", 'r')
@@ -16,10 +15,12 @@ def get_tickers():
         tickers.append(line[:line.index(",")])
     return tickers
 
+
 def get_date(submission):
     time = submission.created
     print(submission.created)
     return datetime.datetime.fromtimestamp(time)
+
 
 def main_function(sc):
     print("starting the function now")
@@ -51,7 +52,7 @@ def main_function(sc):
     wsb = reddit.subreddit("wallstreetbets")
 
     # iterates through the 100 newest posts or until we reach a post we've already scanned
-    for submission in wsb.new(limit=100):
+    for submission in wsb.new(limit=1000):
         # breaks if we have seen this post before
         if float(submission.created) <= prevDate:
             print("breaking now")
@@ -68,10 +69,10 @@ def main_function(sc):
             if word.startswith("$"):
                 word = word[1:]
 
-            #TODO: Add a more advanced way to filter tickers, get rid of the noise
+            # TODO: Add a more advanced way to filter tickers, get rid of the noise
             if word in tickers and word not in filtered_words:
-                # TODO: Add a way to convert the date we get from submission object to something human readable instead of
-                # using now()
+                # TODO: Add a way to convert the date we get from submission object to something human readable instead
+                #  of using now()
 
                 # adds the new ticker to the DB
                 mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
@@ -84,12 +85,15 @@ def main_function(sc):
                 word = word[1:]
 
             if word in tickers and word not in filtered_words:
-                # TODO: Add a way to convert the date we get from submission object to something human readable instead of
-                # using now()
+                # TODO: Add a way to convert the date we get from submission object to something human readable instead
+                #  of using now()
 
                 # adds the new ticker to the DB
                 mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
                 mydb.commit()
+
+
+
 
     # writes the last post we looked at so we know when to stop
     fout = open("prev.txt", "w")
@@ -97,8 +101,8 @@ def main_function(sc):
     fout.close
 
     # scheduler runs the next loop through
-    print("stopping for 10 mins")
-    s.enter(600, 1, main_function, (sc,))
+    print("stopping for 1 hour")
+    s.enter(3600, 1, main_function, (sc,))
 
 
 # sets up the database connector and cursor
