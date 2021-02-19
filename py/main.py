@@ -3,10 +3,13 @@ import datetime
 import time
 import sched
 import praw
-import mysql.connector
+import psycopg2
 
 
 # gets all the tickers from the tickers  file
+
+
+
 def get_tickers():
     fin = open("tickers.txt", 'r')
     tickers = []
@@ -24,7 +27,10 @@ def get_date(submission):
 
 def main_function(sc):
     print("starting the function now")
-    # main part of the script
+    #initializes data
+
+
+    # sets up access to reddit
     reddit = praw.Reddit(
          client_id="l3pEhSgqHalm7g",
          client_secret="FL5BhDDlJXqciRIBckjJTIzDLTCDXw",
@@ -106,12 +112,12 @@ def main_function(sc):
 
 
 # sets up the database connector and cursor
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="stock_scraper",
-  password="quinnkump1",
-  database="py_stock_scraper"
-)
+mydb = psycopg2.connect(
+    host="localhost",
+    database="postgres",
+    user="postgres",
+    password="oreo+Samoa1")
+
 mycursor = mydb.cursor()
 
 # sets up scheudler for the first run through

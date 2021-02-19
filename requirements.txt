@@ -1,2 +1,2 @@
-praw~=7.1.0
-mysql-connector-python~=8.0.22
+praw~=7.1.4
+psycopg2~=2.8.6
