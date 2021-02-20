@@ -81,7 +81,7 @@ def main_function(sc):
                 #  of using now()
 
                 # adds the new ticker to the DB
-                mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
+                mycursor.execute("insert into mentions_nyse values (default, '" + word + "', now())")
                 mydb.commit()
 
         # iterates through the body of the post
@@ -95,7 +95,7 @@ def main_function(sc):
                 #  of using now()
 
                 # adds the new ticker to the DB
-                mycursor.execute("insert into stock_testing values (default, '" + word + "', now())")
+                mycursor.execute("insert into mentions_nyse values (default, '" + word + "', now())")
                 mydb.commit()
 
 
@@ -114,9 +114,13 @@ def main_function(sc):
 # sets up the database connector and cursor
 mydb = psycopg2.connect(
     host="localhost",
-    database="postgres",
-    user="postgres",
-    password="oreo+Samoa1")
+    database="stock_scraper",
+    user="mentions_insert",
+    password="Ins3rt1on")
+    # host="ec2-3-214-3-162.compute-1.amazonaws.com",
+    # database="d3vemptti50aoo",
+    # user="d3vemptti50aoo",
+    # password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
 
 mycursor = mydb.cursor()
 
