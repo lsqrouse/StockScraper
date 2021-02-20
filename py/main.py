@@ -11,7 +11,7 @@ import psycopg2
 
 
 def get_tickers():
-    fin = open("tickers.txt", 'r')
+    fin = open("/py/tickers.txt", 'r')
     tickers = []
     fin.readline()
     for line in fin.readlines():
@@ -43,7 +43,7 @@ def main_function(sc):
                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
     # gets the last post that was handled
-    fin = open("prev.txt", "r+")
+    fin = open("/py/prev.txt", "r+")
     prevDateStr = fin.readline()
     if prevDateStr == "":
         prevDateStr = "1608940800"
@@ -102,7 +102,7 @@ def main_function(sc):
 
 
     # writes the last post we looked at so we know when to stop
-    fout = open("prev.txt", "w")
+    fout = open("/py/prev.txt", "w")
     fout.write(str(lastDateTS))
     fout.close
 
