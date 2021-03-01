@@ -25,5 +25,9 @@ app.get('/', function (req, res) {
     res.render('index', {});
   });
 
+app.get('/*', function(req, res){
+  console.log(req.url.replace("/",""));
+  res.render(req.url.replace("/",""));
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
