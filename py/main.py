@@ -113,14 +113,14 @@ def main_function(sc):
 
 # sets up the database connector and cursor
 mydb = psycopg2.connect(
-    # host="localhost",
-    # database="stock_scraper",
-    # user="mentions_insert",
-    # password="Ins3rt1on")
-    host="ec2-3-214-3-162.compute-1.amazonaws.com",
-    database="d3vemptti50aoo",
-    user="ruwwlubbxnwdsk",
-    password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
+    host="localhost",
+    database="stock_scraper",
+    user="mentions_insert",
+    password="Ins3rt1on")
+    # host="ec2-3-214-3-162.compute-1.amazonaws.com",
+    # database="d3vemptti50aoo",
+    # user="ruwwlubbxnwdsk",
+    # password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
 
 mycursor = mydb.cursor()
 
