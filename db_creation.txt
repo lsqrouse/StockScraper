@@ -1,0 +1,10 @@
+CREATEDB stock_scraper;
+CREATE TABLE mentions_nyse (id SERIAL PRIMARY KEY, ticker TEXT, appearence timestamp );
+
+CREATE USER mentions_readonly WITH PASSWORD 'R3ad_0nly123';
+GRANT SELECT ON mentions_nyse TO mentions_readonly;
+
+
+CREATE USER mentions_insert WITH PASSWORD 'Ins3rt1on';
+GRANT INSERT ON mentions_nyse TO mentions_insert;
+GRANT USAGE, SELECT ON SEQUENCE mentions_nyse_id_seq TO mentions_insert;

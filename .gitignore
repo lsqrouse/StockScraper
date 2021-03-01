@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### personal ###
+./db_creation.txt
