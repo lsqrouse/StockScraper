@@ -1,0 +1,28 @@
+{
+  "name": "stockscraper",
+  "version": "1.0.0",
+  "description": "[![Anurag's github stats](https://github-readme-stats.vercel.app/api?username=lsqrouse)](https://github.com/anuraghazra/github-readme-stats)",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "html": "^1.0.0",
+    "path": "^0.12.7",
+    "pg": "^8.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsqrouse/StockScraper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lsqrouse/StockScraper/issues"
+  },
+  "homepage": "https://github.com/lsqrouse/StockScraper#readme"
+}
