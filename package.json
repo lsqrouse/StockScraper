@@ -6,7 +6,7 @@
   "dependencies": {
     "ejs": "^3.1.6",
     "express": "^4.17.1",
-    "fs": "^0.0.1-security",
+    "fs": "0.0.1-security",
     "html": "^1.0.0",
     "jade": "^1.11.0",
     "path": "^0.12.7",
@@ -14,7 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",

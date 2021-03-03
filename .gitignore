@@ -34,3 +34,5 @@ build/
 
 ### personal ###
 ./db_creation.txt
+./venv
+./node_modules
