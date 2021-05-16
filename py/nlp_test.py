@@ -71,26 +71,30 @@ def get_sent(text):
     custom_tokens = remove_noise(word_tokenize(text))
     sent = classifier.classify(dict([token, True] for token in custom_tokens))
     if (sent == 'Positive'):
-        return "+ 1"
+        return "1"
     return "- 1";
 
 def init():
     #make sure that the right stuff is downloaded
-    nltk.download('twitter_samples')
-    nltk.download('stopwords')
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('wordnet')
-    nltk.download('punkt')
+
+
+    print("before stopwords")
 
     #get global variables ready
     global tweet_tokens, classifier, custom_tokens
+    print("before tokenized")
+
     tweet_tokens = twitter_samples.tokenized('positive_tweets.json')[0]
+
+    print("before stopwords")
 
     stop_words = stopwords.words('english')
 
+    print("before tokens")
     positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json')
     negative_tweet_tokens = twitter_samples.tokenized('negative_tweets.json')
 
+    print("before tokenlists")
     positive_cleaned_tokens_list = []
     negative_cleaned_tokens_list = []
 
@@ -100,11 +104,16 @@ def init():
     for tokens in negative_tweet_tokens:
         negative_cleaned_tokens_list.append(remove_noise(tokens, stop_words))
 
+    print("Got tokens...")
+
     all_pos_words = get_all_words(positive_cleaned_tokens_list)
     freq_dist_pos = FreqDist(all_pos_words)
 
     positive_tokens_for_model = get_tweets_for_model(positive_cleaned_tokens_list)
     negative_tokens_for_model = get_tweets_for_model(negative_cleaned_tokens_list)
+
+    print("Got tokens for model...")
+
 
     positive_dataset = [(tweet_dict, "Positive")
                         for tweet_dict in positive_tokens_for_model]
@@ -113,6 +122,9 @@ def init():
                         for tweet_dict in negative_tokens_for_model]
 
     dataset = positive_dataset + negative_dataset
+
+    print("Got dataset...")
+
 
     random.shuffle(dataset)
 

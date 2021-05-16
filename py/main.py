@@ -42,7 +42,7 @@ def main_function(sc):
     print("time is " + str(time.time()))
     # gets our tickers
     tickers = get_tickers()
-    filtered_words = ["YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+    filtered_words = ["CEO", "TA", "ALL", "AI", "EV", "YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
     # gets the last post that was handled
@@ -92,7 +92,7 @@ def main_function(sc):
                 id = str(day) + word
 
                 # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions " + title_sent)
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
                 mydb.commit()
 
         #gets the sentiment of the body
@@ -110,7 +110,7 @@ def main_function(sc):
                 id = str(day) + word
 
                 # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions " + title_sent)
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
                 mydb.commit()
 
     # writes the last post we looked at so we know when to stop
