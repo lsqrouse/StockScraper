@@ -5,6 +5,8 @@ import sched
 import praw
 import psycopg2
 
+from datetime import date
+
 
 # gets all the tickers from the tickers  file
 
@@ -23,6 +25,9 @@ def get_date(submission):
     time = submission.created
     print(submission.created)
     return datetime.datetime.fromtimestamp(time)
+
+def date_to_day(date):
+    return date[8:10]
 
 
 def main_function(sc):
@@ -94,12 +99,15 @@ def main_function(sc):
                 # TODO: Add a way to convert the date we get from submission object to something human readable instead
                 #  of using now()
 
+                date = date.today()
+                print("date is")
+                print(date)
+                print("formatted is")
+                print(date.strftime())
+
                 # adds the new ticker to the DB
                 mycursor.execute("insert into mentions_nyse values (default, '" + word + "', now())")
                 mydb.commit()
-
-
-
 
     # writes the last post we looked at so we know when to stop
     fout = open("py/prev.txt", "w")
