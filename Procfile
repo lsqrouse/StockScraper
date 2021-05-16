@@ -1,1 +1,2 @@
-worker: node app.js
+web: node app.js
+worker: python3 py/main.py

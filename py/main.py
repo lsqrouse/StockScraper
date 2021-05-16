@@ -5,11 +5,11 @@ import sched
 import praw
 import psycopg2
 
+from datetime import date
+
+
 
 # gets all the tickers from the tickers  file
-
-
-
 def get_tickers():
     fin = open("py/tickers.txt", 'r')
     tickers = []
@@ -44,6 +44,7 @@ def main_function(sc):
 
     # gets the last post that was handled
     fin = open("py/prev.txt", "r+")
+
     prevDateStr = fin.readline()
     if prevDateStr == "":
         prevDateStr = "1608940800"
@@ -80,8 +81,14 @@ def main_function(sc):
                 # TODO: Add a way to convert the date we get from submission object to something human readable instead
                 #  of using now()
 
+                #gets the date as just a day
+                day = date.today()
+
+                #creats the unique id for each day
+                id = str(day) + word
+
                 # adds the new ticker to the DB
-                mycursor.execute("insert into mentions_nyse values (default, '" + word + "', now())")
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
                 mydb.commit()
 
         # iterates through the body of the post
@@ -91,15 +98,15 @@ def main_function(sc):
                 word = word[1:]
 
             if word in tickers and word not in filtered_words:
-                # TODO: Add a way to convert the date we get from submission object to something human readable instead
-                #  of using now()
+                #gets the date as just a day
+                day = date.today()
+
+                #creats the unique id for each day
+                id = str(day) + word
 
                 # adds the new ticker to the DB
-                mycursor.execute("insert into mentions_nyse values (default, '" + word + "', now())")
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
                 mydb.commit()
-
-
-
 
     # writes the last post we looked at so we know when to stop
     fout = open("py/prev.txt", "w")
@@ -113,14 +120,10 @@ def main_function(sc):
 
 # sets up the database connector and cursor
 mydb = psycopg2.connect(
-    host="localhost",
-    database="stock_scraper",
-    user="mentions_insert",
-    password="Ins3rt1on")
-    # host="ec2-3-214-3-162.compute-1.amazonaws.com",
-    # database="d3vemptti50aoo",
-    # user="ruwwlubbxnwdsk",
-    # password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
+    host="ec2-3-214-3-162.compute-1.amazonaws.com",
+    database="d3vemptti50aoo",
+    user="ruwwlubbxnwdsk",
+    password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
 
 mycursor = mydb.cursor()
 
