@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <style>
+            table {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            td {
+                border-bottom: 1px solid black;
+            }
+        </style>
+    </head>
+
+
+    <body>
+        <p1>
+            <h1> This is the header to my incredible website </h1>
+            <br>
+            Here's a simple top 10
+            <br>
+            <table style="border: 1px solid black;">
+                <thead>
+                    <tr style="border: 1px solid black;"> 
+                        <th> Rank </th>
+                        <th> Ticker </th>
+                        <th> Count </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (i = 0; i < rows.length; i++) { %>
+                        <tr>
+                            <td> <%- i + 1 -%> </td> 
+                            <td> <%- rows[i].ticker -%> </td>
+                            <td> <%- rows[i].mentions -%></td>
+                        </tr>
+                    <% }; %>
+                </tbody>
+            </table>
+        </p1>
+    </body>
+</html>
