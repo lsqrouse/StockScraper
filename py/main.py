@@ -7,8 +7,6 @@ import psycopg2
 
 from datetime import date
 
-
-
 # gets all the tickers from the tickers  file
 def get_tickers():
     fin = open("py/tickers.txt", 'r')
@@ -23,6 +21,9 @@ def get_date(submission):
     time = submission.created
     print(submission.created)
     return datetime.datetime.fromtimestamp(time)
+
+def date_to_day(date):
+    return date[8:10]
 
 
 def main_function(sc):
@@ -103,6 +104,12 @@ def main_function(sc):
 
                 #creats the unique id for each day
                 id = str(day) + word
+
+                date = date.today()
+                print("date is")
+                print(date)
+                print("formatted is")
+                print(date.strftime())
 
                 # adds the new ticker to the DB
                 mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
