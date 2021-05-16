@@ -7,6 +7,8 @@ import psycopg2
 
 from datetime import date
 
+#gets our nlp stuff
+from nlp_test import init, get_sent, test
 # gets all the tickers from the tickers  file
 def get_tickers():
     fin = open("py/tickers.txt", 'r')
@@ -71,6 +73,10 @@ def main_function(sc):
             print("just set the new date")
             lastDateTS = float(submission.created)
 
+
+        #gets the sentiment of the body
+        title_sent = get_sent(submission.selftext)
+
         # iterates through the title
         for word in submission.title.split():
             # handle if theres a dollar sign
@@ -86,8 +92,11 @@ def main_function(sc):
                 id = str(day) + word
 
                 # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions " + title_sent)
                 mydb.commit()
+
+        #gets the sentiment of the body
+        body_sent = get_sent(submission.selftext)
 
         # iterates through the body of the post
         for word in submission.selftext.split():
@@ -96,20 +105,12 @@ def main_function(sc):
                 word = word[1:]
 
             if word in tickers and word not in filtered_words:
-                #gets the date as just a day
+                #gets the date as yyyy-mm-dd for the id
                 day = date.today()
-
-                #creats the unique id for each day
                 id = str(day) + word
 
-                date = date.today()
-                print("date is")
-                print(date)
-                print("formatted is")
-                print(date.strftime())
-
                 # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions " + title_sent)
                 mydb.commit()
 
     # writes the last post we looked at so we know when to stop
@@ -130,6 +131,9 @@ mydb = psycopg2.connect(
     password="979a396bba68831aac97d498fca8ef91cef26c322def58c8e859ca219bbe956f")
 
 mycursor = mydb.cursor()
+
+init()
+print("Model fully initialized...")
 
 # sets up scheudler for the first run through
 s = sched.scheduler(time.time, time.sleep)
