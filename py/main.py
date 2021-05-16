@@ -79,9 +79,6 @@ def main_function(sc):
 
             # TODO: Add a more advanced way to filter tickers, get rid of the noise
             if word in tickers and word not in filtered_words:
-                # TODO: Add a way to convert the date we get from submission object to something human readable instead
-                #  of using now()
-
                 #gets the date as just a day
                 day = date.today()
 
