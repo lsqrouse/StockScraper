@@ -72,11 +72,16 @@ def get_sent(text):
     sent = classifier.classify(dict([token, True] for token in custom_tokens))
     if (sent == 'Positive'):
         return "1"
-    return "- 1";
+    return "- 1"
 
 def init():
     #make sure that the right stuff is downloaded
-
+    #make sure that the right stuff is downloaded
+    nltk.download('twitter_samples')
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('punkt')
 
     print("before stopwords")
 
