@@ -3,6 +3,7 @@ const path = require('path');
 const html = require('html');
 const fs = require('fs');
 const pg = require('pg');
+const { SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG } = require('constants');
 
 //sets up express so that the html can be served
 const app = express();
@@ -25,12 +26,15 @@ app.set('view engine', 'html');
 
 //handles requests for the index page
 app.get('/', function (req, res) {
-    db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse GROUP BY ticker ORDER BY mentions desc LIMIT 10", (err, db_res) => {
-      if (err) {
-        console.log(err);
-      }
-      res.render('index.ejs', {
-        rows: db_res.rows,
+    db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse GROUP BY ticker ORDER BY mentions desc LIMIT 10", (err, ment_res) => {
+      db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse GROUP BY ticker ORDER BY sentiment desc LIMIT 10", (err, sent_res) => {
+        if (err) {
+          console.log(err);
+        }
+        res.render('index.ejs', {
+          ment_rows: ment_res.rows,
+          sent_rows: sent_res.rows,
+        });
       });
     });
 });
