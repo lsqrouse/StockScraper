@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <style>
+            table {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            td {
+                border-bottom: 1px solid black;
+            }
+        </style>
+    </head>
+
+
+    <body>
+        <p1>
+            <h1> This is the header to my incredible website </h1>
+            <br>
+            Here's a simple top 10 by mentions
+            <br>
+            <table style="border: 1px solid black;">
+                <thead>
+                    <tr style="border: 1px solid black;"> 
+                        <th> Rank </th>
+                        <th> Ticker </th>
+                        <th> Mentions </th>
+                        <th> Sentiment </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (i = 0; i < ment_rows.length; i++) { %>
+                        <tr>
+                            <td> <%- i + 1 -%> </td> 
+                            <td> <a href="/<%- ment_rows[i].ticker -%>"> <%- ment_rows[i].ticker -%> </a> </td>
+                            <td> <%- ment_rows[i].mentions -%> </td>
+                            <td> <%- ment_rows[i].sentiment -%> </td>
+                        </tr>
+                    <% }; %>
+                </tbody>
+            </table>
+
+            <br>
+            Here's a simple top 10 by Sentiment
+            <br>
+            <table style="border: 1px solid black;">
+                <thead>
+                    <tr style="border: 1px solid black;"> 
+                        <th> Rank </th>
+                        <th> Ticker </th>
+                        <th> Mentions </th>
+                        <th> Sentiment </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (i = 0; i < sent_rows.length; i++) { %>
+                        <tr>
+                            <td> <%- i + 1 -%> </td> 
+                            <td> <a href="/<%- sent_rows[i].ticker -%>"> <%- sent_rows[i].ticker -%> </a> </td>
+                            <td> <%- sent_rows[i].mentions -%> </td>
+                            <td> <%- sent_rows[i].sentiment -%> </td>
+                        </tr>
+                    <% }; %>
+                </tbody>
+            </table>
+        </p1>
+    </body>
+</html>
