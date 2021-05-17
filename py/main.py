@@ -85,6 +85,13 @@ def main_function(sc):
                 #creats the unique id for each day
                 id = str(day) + word
 
+                #if we've reached a new day, then remove posts with less than 3 mentions
+                if (day != prevDay):
+                    mycursor.execute("DELETE FROM mentions_nyse WHERE mentions < 3")
+                    mydb.commit()
+                    prevDay = day
+
+
                 # adds the new ticker to the DB
                 mycursor.execute("INSERT INTO mentions_nyse (id, mentions) VALUES ('" + id + "', 1) ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1")
                 mydb.commit()
@@ -131,6 +138,9 @@ mydb = psycopg2.connect(
 
 mycursor = mydb.cursor()
 
+#sets up some global variables
+global prevDay
+prevDay = ""
 # sets up scheudler for the first run through
 s = sched.scheduler(time.time, time.sleep)
 s.enter(1, 1, main_function, (s,))
