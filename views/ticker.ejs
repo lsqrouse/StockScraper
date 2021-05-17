@@ -14,26 +14,30 @@
 
     <body>
         <p1>
-            <h1> This is the header to my incredible website </h1>
+            <h1> This is the incredible page for <%- ticker -%> which is a great ticker. Maybe... </h1>
             <br>
-            Here's a simple top 10
+            <b> Total Mentions: </b> <%- total_mentions -%>
+            <b> Total Sentiment: </b> <%- total_sentiment -%>
+            <br>
+            Here's the raw data:
             <br>
             <table style="border: 1px solid black;">
                 <thead>
                     <tr style="border: 1px solid black;"> 
-                        <th> Rank </th>
+                        <th> Date </th>
                         <th> Ticker </th>
-                        <th> Mentions </th>
+                        <th> Count </th>
                         <th> Sentiment </th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for (i = 0; i < rows.length; i++) { %>
                         <tr>
-                            <td> <%- i + 1 -%> </td> 
-                            <td> <a href="/<%- rows[i].ticker -%>"> <%- rows[i].ticker -%> </a> </td>
-                            <td> <%- rows[i].mentions -%> </td>
-                            <td> <%- rows[i].sentiment -%> </td>
+                            <td> <%- rows[i].date -%></td> 
+                            <td>  <%- rows[i].ticker -%> </td>
+                            <td> <%- rows[i].mentions -%></td>
+                            <td> <%- rows[i].sentiment -%></td>
+
                         </tr>
                     <% }; %>
                 </tbody>

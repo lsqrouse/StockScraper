@@ -25,20 +25,41 @@ app.set('view engine', 'html');
 
 //handles requests for the index page
 app.get('/', function (req, res) {
-    db_client.query("SELECT ticker, COUNT(*) as mentions FROM mentions_nyse GROUP BY ticker ORDER BY mentions desc LIMIT 10", (err, db_res) => {
+    db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse GROUP BY ticker ORDER BY mentions desc LIMIT 10", (err, db_res) => {
       if (err) {
         console.log(err);
       }
       res.render('index.ejs', {
         rows: db_res.rows,
-        test: "hi" 
       });
     });
+});
+
+//gets the individual ticker data
+app.get('/[A-Z]{1,4}', function (req, res) {
+  //gets the ticker
+  var ticker = req.url.substring(1);
+
+  //queries the db for the grouping and then just raw data
+  db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse WHERE ticker = '" + ticker + "' GROUP BY ticker ", (err, group_res) => {
+    db_client.query("SELECT * FROM mentions_nyse WHERE ticker = '" + ticker + "'", (err, allrows_res) => {
+      if (err) {
+        console.log(err)
+        res.render("error.ejs");
+      } else {
+        res.render("ticker.ejs", {
+          ticker: ticker,
+          total_mentions: group_res.rows[0].mentions,
+          total_sentiment: group_res.rows[0].sentiment,
+          rows: allrows_res.rows,
+        })
+      }
+    });
   });
+});
 
 app.get('/*', function(req, res){
-  console.log(req.url.replace("/",""));
-  res.render(req.url.replace("/",""));
+  res.render("fnf.ejs");
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
