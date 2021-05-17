@@ -18,7 +18,8 @@ const db_client = new pg.Pool({
     port: '5432',            
     ssl: {
       rejectUnauthorized: false
-  }});
+}});
+
 
 //sets our view engine to be able to render html
 app.engine('html', require('ejs').renderFile);
@@ -60,6 +61,14 @@ app.get('/[A-Z]{1,4}', function (req, res) {
       }
     });
   });
+});
+
+//gets the individual ticker data
+app.post('/[A-Z]{1,4}_data', function (req, res) {
+  //gets the ticker
+  var ticker = req.url.substring(1);
+  console.log("ticker is");
+  console.log(ticker)
 });
 
 app.get('/*', function(req, res){

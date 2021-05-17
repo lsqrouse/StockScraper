@@ -9,10 +9,12 @@
                 border-bottom: 1px solid black;
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 
 
     <body>
+        <p id="data"> <%- JSON.stringify(rows) -%></p>
         <p1>
             <h1> This is the incredible page for <%- ticker -%> which is a great ticker. Maybe... </h1>
             <br>
@@ -21,7 +23,7 @@
             <br>
             Here's the raw data:
             <br>
-            <table style="border: 1px solid black;">
+            <table style="border: 1px solid black;" id="table">
                 <thead>
                     <tr style="border: 1px solid black;"> 
                         <th> Date </th>
@@ -42,6 +44,111 @@
                     <% }; %>
                 </tbody>
             </table>
+
+            <div style="text-align: center; width: 800px; ">
+                <h1> Mentions Over Time </h1>
+            </div>
+            <canvas id="mentions_chart" width="100" height="100"></canvas>
+
+            <div style="text-align: center; width: 800px; ">
+                    <h1> Sentiment Over Time </h1>
+            </div>
+            <canvas id="sentiment_chart" width="100" height="100"></canvas>
+
         </p1>
     </body>
+    <script>
+        var ment_ctx = document.getElementById('mentions_chart').getContext('2d');
+        var sent_ctx = document.getElementById('sentiment_chart').getContext('2d');
+        var table = document.getElementById('table');
+
+        //initializes lists to parse our data 
+        var dates = [];
+        var mentions = [];
+        var sentiments = [];
+
+        //gets the number of mentions
+        for (var i = 1; i < table.rows.length; i++) {
+            var d = table.rows[i].children[0].innerText;
+            var m = table.rows[i].children[2].innerText;
+            var s = table.rows[i].children[3].innerText;
+            
+            dates.push(d);
+            mentions.push(m);
+            sentiments.push(s);
+        }
+        var mention_chart = new Chart(ment_ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '# of Votes',
+                    data: mentions,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var sentiment_chart = new Chart(sent_ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '# of Votes',
+                    data: mentions,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        mention_chart.resize(800, 200)
+        sentiment_chart.resize(800, 200)
+
+        </script>
 </html>
