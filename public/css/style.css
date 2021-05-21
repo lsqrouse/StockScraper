@@ -1,0 +1,96 @@
+.container {
+    background-color: #323a61;
+    font-family: "Monospace", Monaco, sans-serif;
+    color: #cfcfcf;
+    width: 100%;
+}
+.navbar {
+    background-color: #2d2f33;
+    color:#cfcfcf;
+    margin-bottom:0;
+    font-size:32;
+}
+hr {
+    margin:4px;
+    border-color: black; 
+}
+
+body {
+    background-color: #323a61;
+    font-family: "Monospace", Monaco, sans-serif;
+    color: #cfcfcf;
+}
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    background-color: #e6e6e6;
+    border-radius: 2px;
+    color: #222;
+    margin-left:auto;
+    margin-right:auto;}
+
+.center {
+    float: center;
+}
+td {
+    border-bottom: 1px solid black;
+    padding: 5px;
+}
+th {
+    padding:5px;
+}
+
+a:link {
+    color: #222;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #222;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+  }
+
+li {
+    float: left;
+  }
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+li a:link {
+    color: #cfcfcf;
+    text-decoration: none;
+
+}
+
+li a:visited {
+    color: #cfcfcf;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+    background-color: #222;
+    text-decoration: none;
+}
+
+canvas {
+    background-color: #e6e6e6;
+    border-radius: 2px;
+}
+
+form {
+    text-align: center;
+  }

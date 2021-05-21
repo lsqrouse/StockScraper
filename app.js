@@ -24,6 +24,7 @@ const db_client = new pg.Pool({
 //sets our view engine to be able to render html
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+app.use(express.static(__dirname + '/public'));
 
 //handles requests for the index page
 app.get('/', function (req, res) {
@@ -38,6 +39,40 @@ app.get('/', function (req, res) {
         });
       });
     });
+});
+
+app.get('/alltickers', function (req, res) {
+  var order;
+  if (req.query.sortBy) {
+    console.log(req.query)
+    order = req.query.sortBy;
+  } else {
+    order = "mentions";
+  }
+
+  var search;
+  if (req.query.searchText) {
+    search = "WHERE ticker LIKE '%" + req.query.searchText + "%'";
+  } else {
+    search = "";
+  }
+  console.log("Query was");
+  console.log("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse " + search + " GROUP BY ticker ORDER BY " + order + " desc")
+
+
+  db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse " + search + " GROUP BY ticker ORDER BY " + order + " desc", (err, all_res) => {
+    if (err) {
+      console.log(err)
+    }
+    res.render("alltickers.ejs", {
+      all_rows: all_res.rows
+    });
+
+  });
+});
+
+app.get('/about', function (req, res) {
+  res.render("about.ejs");
 });
 
 //gets the individual ticker data
@@ -72,6 +107,8 @@ app.post('/[A-Z]{1,4}_data', function (req, res) {
 });
 
 app.get('/*', function(req, res){
+  console.log("File Not Found for:")
+  console.log(req.url)
   res.render("fnf.ejs");
 });
 

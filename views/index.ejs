@@ -1,67 +1,73 @@
 <html>
     <head>
-        <style>
-            table {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-            td {
-                border-bottom: 1px solid black;
-            }
-        </style>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href="/css/style.css" rel="stylesheet" type="text/css">
+        
     </head>
 
 
     <body>
-        <p1>
-            <h1> This is the header to my incredible website </h1>
-            <br>
-            Here's a simple top 10 by mentions
-            <br>
-            <table style="border: 1px solid black;">
-                <thead>
-                    <tr style="border: 1px solid black;"> 
-                        <th> Rank </th>
-                        <th> Ticker </th>
-                        <th> Mentions </th>
-                        <th> Sentiment </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (i = 0; i < ment_rows.length; i++) { %>
-                        <tr>
-                            <td> <%- i + 1 -%> </td> 
-                            <td> <a href="/<%- ment_rows[i].ticker -%>"> <%- ment_rows[i].ticker -%> </a> </td>
-                            <td> <%- ment_rows[i].mentions -%> </td>
-                            <td> <%- ment_rows[i].sentiment -%> </td>
-                        </tr>
-                    <% }; %>
-                </tbody>
-            </table>
+        <div class="container">
+            <p1>
+                <%- include('fragments/navbar.ejs'); %>
+                <div class="row" style="text-align:center; ">
+                    <h1> Top Tickers </h1> <hr>
+                    <div class="col-lg-6" style="margin-top:5px; margin-top:20px;">
+                        Top 10 by Mentions
+                        <table style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;"> 
+                                    <th> Rank </th>
+                                    <th> Ticker </th>
+                                    <th> Mentions </th>
+                                    <th> Sentiment </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (i = 0; i < ment_rows.length; i++) { %>
+                                    <tr>
+                                        <td> <%- i + 1 -%> </td> 
+                                        <td> <a href="/<%- ment_rows[i].ticker -%>"> <%- ment_rows[i].ticker -%> </a> </td>
+                                        <td> <%- ment_rows[i].mentions -%> </td>
+                                        <td> <%- ment_rows[i].sentiment -%> </td>
+                                    </tr>
+                                <% }; %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-6" style=" margin-top:20px;">
+                        Top 10 by Sentiment
+                        <br>
+                        <table style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;"> 
+                                    <th> Rank </th>
+                                    <th> Ticker </th>
+                                    <th> Mentions </th>
+                                    <th> Sentiment </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (i = 0; i < sent_rows.length; i++) { %>
+                                    <tr>
+                                        <td> <%- i + 1 -%> </td> 
+                                        <td> <a href="/<%- sent_rows[i].ticker -%>"> <%- sent_rows[i].ticker -%> </a> </td>
+                                        <td> <%- sent_rows[i].mentions -%> </td>
+                                        <td> <%- sent_rows[i].sentiment -%> </td>
+                                    </tr>
+                                <% }; %>
+                            </tbody>
+                        </table>
+                    </div>
 
-            <br>
-            Here's a simple top 10 by Sentiment
-            <br>
-            <table style="border: 1px solid black;">
-                <thead>
-                    <tr style="border: 1px solid black;"> 
-                        <th> Rank </th>
-                        <th> Ticker </th>
-                        <th> Mentions </th>
-                        <th> Sentiment </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (i = 0; i < sent_rows.length; i++) { %>
-                        <tr>
-                            <td> <%- i + 1 -%> </td> 
-                            <td> <a href="/<%- sent_rows[i].ticker -%>"> <%- sent_rows[i].ticker -%> </a> </td>
-                            <td> <%- sent_rows[i].mentions -%> </td>
-                            <td> <%- sent_rows[i].sentiment -%> </td>
-                        </tr>
-                    <% }; %>
-                </tbody>
-            </table>
-        </p1>
+                </div>
+                
+
+            </p1>
+        </div>
+
     </body>
 </html>
