@@ -11,6 +11,40 @@
     <body>
         <div class="container">
             <%- include('fragments/navbar.ejs'); %>
+            <div class="row" style="text-align: center;">
+                <h1>
+                    About This Page
+                </h1>
+                <hr>
+            </div>
+            <div class="row" style="font-size:20;">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4" >
+                    <br>
+                    This website was created by me, Quinn Rouse, with the purpose of tracking the most talked about stocks on various subreddits. 
+                    Over the COVID-19 pandemic, I used all the extra time we were all given to start learning a new skill, and for me that was investing. 
+                    Throughout the summer of 2020, I was able to find amazing research and information online for new investors and seasoned veterans alike, and the primary home for that research was on reddit. 
+                    I knew tons of imformation could be gleaned from scraping Reddit, and after watching a few stocks rise incredibly fast due to reddit investors uncovering a great opportunity, I recognized how powerful it would be to know what "The" next stock was before it rose in value. 
+                    Thus, I was interested enough to make this personal project. 
+                    Over winter break of 2020, a friend of mine and I started working on the project in an at-home "hackathon" - one where we really just invited some friends over to my house to all program together. 
+                    Although my friend didn't continue working on the project, I kept working on it throughout the school year whenever I had a bit of free time, and I'm happy with how the project turned out, and which how much I learned from it.
+                    A description of how the site works can be found below. <br> <br>
+                    Currently, the site tracks r/stocks and r/investing, although it aims to track more subreddits, as well as expand to websites other than reddit, such as twitter. 
+                    The way this program functions, is once an hour, a script is run to scrape all the posts on a subreddit that have appeared since the last time the scraper ran. 
+                    Each posts's title and body are then passed to a natural language processing model, which determines if the post has a positive or negative sentiment. 
+                    This model was uses Naive Bayes classifcation, and was trained on a dataset from people discussing stocks on twitter. 
+                    After a post's title and body sentiment has been determined, the content of each is examined to determine which tickers were mentioned in the post, based off a list of all stocks in the New York Stock Exchange. 
+                    Once a ticker is found, it is added to a list of tickers that have been found in that specficic post. 
+                    This allows a single post to create database entry for multiple tickers, but does not create a new entry each time a ticker was mentioned, which would lead to lower quality data.
+                    If a new entry was created each time a ticker was found in a post, then posts that are longer which mention the ticker more times would have far more database entries than a stock that has been talked about by alot of different people who only mention the ticker once in their post.
+                    When adding an entry to the database, the sentiment is either increased or decreased by one, depending on if the machine learning model returned that the body or title of the post was positive or negative. 
+                    The website then displays that data, and allows users to select a speficic ticker to view how its sentiment or popularity has changed over time. <br> <br>
+                    Future plans (should I ever decide to revisit this project) for the site include - as already mentioned - expanding to other platforms such as twitter, refining the natural language processing model with a better dataset, a better, more visually appealing UI design, and user account creation, which would open the door for tons of other features like stock watchlists, or email notifications for significant price movement.
+
+                </div>
+                <div class="col-lg-4"></div>
+
+            </div>
         </div>
     </body>
 </html>

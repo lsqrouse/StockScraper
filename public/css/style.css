@@ -8,17 +8,18 @@
     background-color: #2d2f33;
     color:#cfcfcf;
     margin-bottom:0;
-    font-size:32;
+    font-size:24;
 }
 hr {
     margin:4px;
     border-color: black; 
 }
 
-body {
+body, pre {
     background-color: #323a61;
     font-family: "Monospace", Monaco, sans-serif;
     color: #cfcfcf;
+    border: none;
 }
 table {
     border: 1px solid black;
@@ -94,3 +95,4 @@ canvas {
 form {
     text-align: center;
   }
+
