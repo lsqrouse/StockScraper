@@ -3,7 +3,12 @@ const path = require('path');
 const html = require('html');
 const fs = require('fs');
 const pg = require('pg');
-const { SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG } = require('constants');
+const Alpaca = require('@alpacahq/alpaca-trade-api')
+const dateFns = require('date-fns');
+const e = require('express');
+const format = 'yyyy-MM-dd'
+const date = dateFns.format(new Date(), format)
+
 
 //sets up express so that the html can be served
 const app = express();
@@ -20,6 +25,14 @@ const db_client = new pg.Pool({
       rejectUnauthorized: false
 }});
 
+//connects to alpaca which allows us to get stock data
+const alpaca = new Alpaca({
+  keyId: "PKJPX0IF1DLG6SWEL6IA",
+  secretKey: "AcZgy8G23yhDMbOVO2QRhnvnMHc32Vf3oGZko6v2",
+  paper: true,
+  usePolygon: false
+})
+
 
 //sets our view engine to be able to render html
 app.engine('html', require('ejs').renderFile);
@@ -33,6 +46,17 @@ app.get('/', function (req, res) {
         if (err) {
           console.log(err);
         }
+        let today = new Date()
+        const to = dateFns.format(today, format)
+        today.setMonth(today.getMonth() - 3)
+        const from = dateFns.format(today, format)
+        let stock = 'AAPL'
+
+        alpaca.getAggregates(stock, 'day', from, to).then(data => {
+          console.table(data.results);
+        }).catch((err) => {
+          console.log(err);
+        })
         res.render('index.ejs', {
           ment_rows: ment_res.rows,
           sent_rows: sent_res.rows,

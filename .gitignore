@@ -36,3 +36,4 @@ build/
 ./db_creation.txt
 ./venv
 ./node_modules
+node_modules
