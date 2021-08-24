@@ -50,17 +50,20 @@ app.get('/', function (req, res) {
         const to = dateFns.format(today, format)
         today.setMonth(today.getMonth() - 3)
         const from = dateFns.format(today, format)
-        let stock = 'AAPL'
+        let stock = 'SNP'
 
         alpaca.getAggregates(stock, 'day', from, to).then(data => {
-          console.table(data.results);
+          //console.table(data.results);
+          const results = data.results.map(res => res.startEpochTime = dateFns.format(res.startEpochTime, format))
+          res.render('index.ejs', {
+            ment_rows: ment_res.rows,
+            sent_rows: sent_res.rows,
+            rows: data.results
+          });
         }).catch((err) => {
           console.log(err);
         })
-        res.render('index.ejs', {
-          ment_rows: ment_res.rows,
-          sent_rows: sent_res.rows,
-        });
+
       });
     });
 });
@@ -111,11 +114,24 @@ app.get('/[A-Z]{1,4}', function (req, res) {
         console.log(err)
         res.render("error.ejs");
       } else {
-        res.render("ticker.ejs", {
-          ticker: ticker,
-          total_mentions: group_res.rows[0].mentions,
-          total_sentiment: group_res.rows[0].sentiment,
-          rows: allrows_res.rows,
+        //queries alpaca to get the stocks data
+        let today = new Date()
+        const to = dateFns.format(today, format)
+        today.setMonth(today.getMonth() - 3)
+        const from = dateFns.format(today, format)
+
+        alpaca.getAggregates(ticker, 'day', from, to).then(data => {
+          //console.table(data.results);
+          const results = data.results.map(res => res.startEpochTime = dateFns.format(res.startEpochTime, format))
+          res.render('ticker.ejs', {
+            ticker: ticker,
+            total_mentions: group_res.rows[0].mentions,
+            total_sentiment: group_res.rows[0].sentiment,
+            rows: allrows_res.rows,
+            alpaca_rows: data.results
+          });
+        }).catch((err) => {
+          console.log(err);
         })
       }
     });

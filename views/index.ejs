@@ -4,6 +4,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <link href="/css/style.css" rel="stylesheet" type="text/css">
         
     </head>
@@ -13,9 +15,34 @@
         <div class="container">
             <p1>
                 <%- include('fragments/navbar.ejs'); %>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4" style="text-align: center;">
+                        <h1> Overall Market (SPY) </h1>
+                        <canvas id="market_chart"></canvas>
+                    </div>
+                    <table style="border: 1px solid black;" id="table" hidden>
+                        <thead>
+                            <tr style="border: 1px solid black;"> 
+                                <th> Date </th>
+                                <th> open </th>
+                                <th> close </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (i = 0; i < rows.length; i++) { %>
+                                <tr>
+                                    <td> <%- rows[i].startEpochTime -%></td> 
+                                    <td>  <%- rows[i].openPrice -%> </td>
+                                    <td> <%- rows[i].closePrice -%></td>
+                                </tr>
+                            <% }; %>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="row" style="text-align:center; ">
                     <h1> Top Tickers </h1> <hr>
-                    <div class="col-lg-6" style="margin-top:5px; margin-top:20px;">
+                    <div class="col-lg-6" style="margin-top:20px;">
                         Top 10 by Mentions
                         <table style="border: 1px solid black;">
                             <thead>
@@ -70,4 +97,58 @@
         </div>
 
     </body>
+    <script>
+        var mark_ctx = document.getElementById('market_chart').getContext('2d');
+        var table = document.getElementById('table');
+
+        //initializes lists to parse our data 
+        var dates = [];
+        var prices = [];
+
+        //gets all the prices
+        for (var i = 1; i < table.rows.length; i++) {
+            var d = table.rows[i].children[0].innerText;
+            var o = table.rows[i].children[1].innerText;
+            var c = table.rows[i].children[2].innerText;
+            
+            dates.push(d);
+            prices.push(o);
+            prices.push(c);
+        }
+        var market_chart = new Chart(mark_ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Price',
+                    data: prices,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+
+    </script>
 </html>
