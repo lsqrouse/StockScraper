@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href="/css/style.css" rel="stylesheet" type="text/css">
+        
+    </head>
+
+    <body>
+        <div class="container">
+            <%- include('fragments/navbar.ejs'); %>
+        </div>
+        <div class="row">
+            <div style="margin-left: auto; margin-right:auto; text-align: center;">
+                <h1>
+                    Search for a Ticker
+                </h1>
+                <form method="GET" action="/alltickers" enctype="multipart/form-data">
+                    <label for="search">Search:</label>
+                    <input class='ml-3 mr-2' name="searchText" type="text" placeholder="Search Tickers"></input>
+                    <br>
+                    <label for="sortBy">Sort By:</label>
+
+                    <select id="sort-type" name="sortBy" class='ml-2 mr-2'>
+                        <option value="mentions">Mentions</option>
+                        <option value="sentiment">Sentiment</option>
+                    </select>
+                    <br>
+                    <button action="submit" class='ml-2 mr-4'>Search</button>
+
+    
+                </form>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col" style="margin-top:15px;">
+                <table style="border: 1px solid black;">
+                    <thead>
+                        <tr style="border: 1px solid black;"> 
+                            <th> Rank </th>
+                            <th> Ticker </th>
+                            <th> Mentions </th>
+                            <th> Sentiment </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (i = 0; i < all_rows.length; i++) { %>
+                            <tr>
+                                <td> <%- i + 1 -%> </td> 
+                                <td> <a href="/<%- all_rows[i].ticker -%>"> <%- all_rows[i].ticker -%> </a> </td>
+                                <td> <%- all_rows[i].mentions -%> </td>
+                                <td> <%- all_rows[i].sentiment -%> </td>
+                            </tr>
+                        <% }; %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </body>
+</html>

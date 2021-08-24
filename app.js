@@ -3,7 +3,12 @@ const path = require('path');
 const html = require('html');
 const fs = require('fs');
 const pg = require('pg');
-const { SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG } = require('constants');
+const Alpaca = require('@alpacahq/alpaca-trade-api')
+const dateFns = require('date-fns');
+const e = require('express');
+const format = 'yyyy-MM-dd'
+const date = dateFns.format(new Date(), format)
+
 
 //sets up express so that the html can be served
 const app = express();
@@ -20,10 +25,19 @@ const db_client = new pg.Pool({
       rejectUnauthorized: false
 }});
 
+//connects to alpaca which allows us to get stock data
+const alpaca = new Alpaca({
+  keyId: "PKJPX0IF1DLG6SWEL6IA",
+  secretKey: "AcZgy8G23yhDMbOVO2QRhnvnMHc32Vf3oGZko6v2",
+  paper: true,
+  usePolygon: false
+})
+
 
 //sets our view engine to be able to render html
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+app.use(express.static(__dirname + '/public'));
 
 //handles requests for the index page
 app.get('/', function (req, res) {
@@ -32,12 +46,60 @@ app.get('/', function (req, res) {
         if (err) {
           console.log(err);
         }
-        res.render('index.ejs', {
-          ment_rows: ment_res.rows,
-          sent_rows: sent_res.rows,
-        });
+        let today = new Date()
+        const to = dateFns.format(today, format)
+        today.setMonth(today.getMonth() - 3)
+        const from = dateFns.format(today, format)
+        let stock = 'SNP'
+
+        alpaca.getAggregates(stock, 'day', from, to).then(data => {
+          //console.table(data.results);
+          const results = data.results.map(res => res.startEpochTime = dateFns.format(res.startEpochTime, format))
+          res.render('index.ejs', {
+            ment_rows: ment_res.rows,
+            sent_rows: sent_res.rows,
+            rows: data.results
+          });
+        }).catch((err) => {
+          console.log(err);
+        })
+
       });
     });
+});
+
+app.get('/alltickers', function (req, res) {
+  var order;
+  if (req.query.sortBy) {
+    console.log(req.query)
+    order = req.query.sortBy;
+  } else {
+    order = "mentions";
+  }
+
+  var search;
+  if (req.query.searchText) {
+    search = "WHERE ticker LIKE '%" + req.query.searchText + "%'";
+  } else {
+    search = "";
+  }
+  console.log("Query was");
+  console.log("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse " + search + " GROUP BY ticker ORDER BY " + order + " desc")
+
+
+  db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse " + search + " GROUP BY ticker ORDER BY " + order + " desc", (err, all_res) => {
+    if (err) {
+      console.log(err)
+    }
+    res.render("alltickers.ejs", {
+      all_rows: all_res.rows
+    });
+
+  });
+});
+
+app.get('/about', function (req, res) {
+  res.render("about.ejs");
 });
 
 //gets the individual ticker data
@@ -52,11 +114,24 @@ app.get('/[A-Z]{1,4}', function (req, res) {
         console.log(err)
         res.render("error.ejs");
       } else {
-        res.render("ticker.ejs", {
-          ticker: ticker,
-          total_mentions: group_res.rows[0].mentions,
-          total_sentiment: group_res.rows[0].sentiment,
-          rows: allrows_res.rows,
+        //queries alpaca to get the stocks data
+        let today = new Date()
+        const to = dateFns.format(today, format)
+        today.setMonth(today.getMonth() - 3)
+        const from = dateFns.format(today, format)
+
+        alpaca.getAggregates(ticker, 'day', from, to).then(data => {
+          //console.table(data.results);
+          const results = data.results.map(res => res.startEpochTime = dateFns.format(res.startEpochTime, format))
+          res.render('ticker.ejs', {
+            ticker: ticker,
+            total_mentions: group_res.rows[0].mentions,
+            total_sentiment: group_res.rows[0].sentiment,
+            rows: allrows_res.rows,
+            alpaca_rows: data.results
+          });
+        }).catch((err) => {
+          console.log(err);
         })
       }
     });
@@ -72,6 +147,8 @@ app.post('/[A-Z]{1,4}_data', function (req, res) {
 });
 
 app.get('/*', function(req, res){
+  console.log("File Not Found for:")
+  console.log(req.url)
   res.render("fnf.ejs");
 });
 
