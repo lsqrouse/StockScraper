@@ -121,7 +121,7 @@ app.get('/[A-Z]{1,4}', function (req, res) {
         const from = dateFns.format(today, format)
 
         alpaca.getAggregates(ticker, 'day', from, to).then(data => {
-          //console.table(data.results);
+          console.table(data.results);
           const results = data.results.map(res => res.startEpochTime = dateFns.format(res.startEpochTime, format))
           res.render('ticker.ejs', {
             ticker: ticker,

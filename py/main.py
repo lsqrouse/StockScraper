@@ -57,61 +57,62 @@ def main_function(sc):
 
     # sets up variable to hold the timestamp of the first post we look at
     lastDateTS = prevDate
+    sublist = ['wallstreetbets', 'stocks', 'investing']
+    for subname in sublist:
+        # gets the subreddit
+        sub = reddit.subreddit(subname)
 
-    # gets the subreddit
-    wsb = reddit.subreddit("wallstreetbets")
+        # iterates through the 100 newest posts or until we reach a post we've already scanned
+        for submission in sub.new(limit=1000):
+            # breaks if we have seen this post before
+            if float(submission.created) <= prevDate:
+                print("breaking now")
+                break
 
-    # iterates through the 100 newest posts or until we reach a post we've already scanned
-    for submission in wsb.new(limit=1000):
-        # breaks if we have seen this post before
-        if float(submission.created) <= prevDate:
-            print("breaking now")
-            break
-
-        # sets the first post we read as the previous post, so we know where to stop next time
-        if lastDateTS == prevDate:
-            print("just set the new date")
-            lastDateTS = float(submission.created)
+            # sets the first post we read as the previous post, so we know where to stop next time
+            if lastDateTS == prevDate:
+                print("just set the new date")
+                lastDateTS = float(submission.created)
 
 
-        #gets the sentiment of the body
-        title_sent = get_sent(submission.selftext)
+            #gets the sentiment of the body
+            title_sent = get_sent(submission.selftext)
 
-        # iterates through the title
-        for word in submission.title.split():
-            # handle if theres a dollar sign
-            if word.startswith("$"):
-                word = word[1:]
+            # iterates through the title
+            for word in submission.title.split():
+                # handle if theres a dollar sign
+                if word.startswith("$"):
+                    word = word[1:]
 
-            # TODO: Add a more advanced way to filter tickers, get rid of the noise
-            if word in tickers and word not in filtered_words:
-                #gets the date as just a day
-                day = date.today()
+                # TODO: Add a more advanced way to filter tickers, get rid of the noise
+                if word in tickers and word not in filtered_words:
+                    #gets the date as just a day
+                    day = date.today()
 
-                #creats the unique id for each day
-                id = str(day) + word
+                    #creats the unique id for each day
+                    id = str(day) + word
 
-                # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
-                mydb.commit()
+                    # adds the new ticker to the DB
+                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
+                    mydb.commit()
 
-        #gets the sentiment of the body
-        body_sent = get_sent(submission.selftext)
+            #gets the sentiment of the body
+            body_sent = get_sent(submission.selftext)
 
-        # iterates through the body of the post
-        for word in submission.selftext.split():
-            # handle if theres a dollar sign
-            if word.startswith("$"):
-                word = word[1:]
+            # iterates through the body of the post
+            for word in submission.selftext.split():
+                # handle if theres a dollar sign
+                if word.startswith("$"):
+                    word = word[1:]
 
-            if word in tickers and word not in filtered_words:
-                #gets the date as yyyy-mm-dd for the id
-                day = date.today()
-                id = str(day) + word
+                if word in tickers and word not in filtered_words:
+                    #gets the date as yyyy-mm-dd for the id
+                    day = date.today()
+                    id = str(day) + word
 
-                # adds the new ticker to the DB
-                mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
-                mydb.commit()
+                    # adds the new ticker to the DB
+                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
+                    mydb.commit()
 
     # writes the last post we looked at so we know when to stop
     fout = open("py/prev.txt", "w")
