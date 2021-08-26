@@ -42,7 +42,7 @@ def main_function(sc):
     print("time is " + str(time.time()))
     # gets our tickers
     tickers = get_tickers()
-    filtered_words = ["CEO", "TA", "ALL", "AI", "EV", "YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+    filtered_words = ["CEO", "FOR", "ID", "TA", "ALL", "AI", "EV", "YOLO", "FREE", "PUMP", "RH", "DD", "EOD", "IPO", "ATH", "HUGE", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
     # gets the last post that was handled
@@ -84,6 +84,7 @@ def main_function(sc):
                 if word.startswith("$"):
                     word = word[1:]
 
+                tickerset = set({})
                 # TODO: Add a more advanced way to filter tickers, get rid of the noise
                 if word in tickers and word not in filtered_words:
                     #gets the date as just a day
@@ -92,10 +93,8 @@ def main_function(sc):
                     #creats the unique id for each day
                     id = str(day) + word
 
-                    # adds the new ticker to the DB
-                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
-                    mydb.commit()
-
+                    tickerset.add(word)
+                
             #gets the sentiment of the body
             body_sent = get_sent(submission.selftext)
 
@@ -110,9 +109,19 @@ def main_function(sc):
                     day = date.today()
                     id = str(day) + word
 
+                    # adds it to the set to add to db later
+                    tickerset.add(word)
+
                     # adds the new ticker to the DB
-                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
-                    mydb.commit()
+                    # mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
+                    # mydb.commit()
+
+            # adds the new tickers to the DB
+            for ticker in tickerset:
+                mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + body_sent + ", '" + ticker + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + body_sent)
+                mydb.commit()
+
+            
         print("Finished parsing " + subname)
 
     # writes the last post we looked at so we know when to stop
