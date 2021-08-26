@@ -93,7 +93,7 @@ def main_function(sc):
                     id = str(day) + word
 
                     # adds the new ticker to the DB
-                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
+                    mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + title_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1, sentiment = mentions_nyse.sentiment + " + title_sent)
                     mydb.commit()
 
             #gets the sentiment of the body
@@ -113,6 +113,7 @@ def main_function(sc):
                     # adds the new ticker to the DB
                     mycursor.execute("INSERT INTO mentions_nyse (id, mentions, sentiment, ticker, date, source) VALUES ('" + id + "', 1, " + body_sent + ", '" + word + "', '" + str(day) + "', '" + subname + "') ON CONFLICT (id) DO UPDATE SET mentions = mentions_nyse.mentions + 1,  sentiment = mentions_nyse.sentiment + " + body_sent)
                     mydb.commit()
+        print("Finished parsing " + subname)
 
     # writes the last post we looked at so we know when to stop
     fout = open("py/prev.txt", "w")
