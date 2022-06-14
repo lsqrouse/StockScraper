@@ -68,6 +68,11 @@ app.get('/', function (req, res) {
     });
 });
 
+app.get('/tab', function (req, res) {
+  res.render("tab.ejs");
+});
+
+
 app.get('/alltickers', function (req, res) {
   var order;
   if (req.query.sortBy) {
@@ -146,10 +151,13 @@ app.post('/[A-Z]{1,4}_data', function (req, res) {
   console.log(ticker)
 });
 
+
 app.get('/*', function(req, res){
   console.log("File Not Found for:")
   console.log(req.url)
   res.render("fnf.ejs");
 });
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
