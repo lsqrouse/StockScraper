@@ -45,6 +45,11 @@ app.get('/', function (req, res) {
       db_client.query("SELECT ticker, SUM(mentions) as mentions, SUM(sentiment) as sentiment FROM mentions_nyse GROUP BY ticker ORDER BY sentiment desc LIMIT 10", (err, sent_res) => {
         if (err) {
           console.log(err);
+          res.render('index.ejs', {
+            ment_rows: [],
+            sent_rows: [],
+            rows: []
+          });
         }
         let today = new Date()
         const to = dateFns.format(today, format)
@@ -62,6 +67,11 @@ app.get('/', function (req, res) {
           });
         }).catch((err) => {
           console.log(err);
+            res.render('index.ejs', {
+            ment_rows: [],
+            sent_rows: [],
+            rows: []
+          });
         })
 
       });
